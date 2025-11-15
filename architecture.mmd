@@ -1,0 +1,25 @@
+graph TD
+    subgraph "Cliente (Dispositivo IoT / App)"
+        A[Dispositivo Arduino] -->|Envia dados JSON| B(API Gateway)
+        C[Aplicação Web/Mobile] -->|Consome dados| B
+    end
+
+    subgraph "Air Quality API (.NET 8)"
+        B --> D{Controller}
+        D -->|Valida e processa| E(Services/Lógica de Negócio)
+        E -->|Calcula Categoria| E
+        E -->|Acessa Dados| F(Contexto do EF Core)
+    end
+
+    subgraph "Camada de Dados"
+        F --> G[(Banco de Dados SQL Server)]
+    end
+
+    subgraph "Documentação e Testes"
+        H[Swagger UI] -->|Interage com| D
+    end
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#ccf,stroke:#333,stroke-width:2px
+    style G fill:#bbf,stroke:#333,stroke-width:2px
+

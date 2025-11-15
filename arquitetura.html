@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Mermaid Renderer</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: "Noto Sans CJK SC", "WenQuanYi Zen Hei", "SimSun", "Microsoft YaHei",
+                         "Arial Unicode MS", "Arial", sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background: white;
+            color: #333;
+        }
+         
+        .mermaid {
+            text-align: center;
+            margin: 1.5em 0;
+            page-break-inside: avoid;
+            background-color: transparent;
+        }
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="mermaid">&#39;&#39;&#39;graph TD
+    subgraph &#34;Cliente (Dispositivo IoT / App)&#34;
+        A[Dispositivo Arduino] --&gt;|Envia dados JSON| B(API Gateway)
+        C[Aplicação Web/Mobile] --&gt;|Consome dados| B
+    end
+
+    subgraph &#34;Air Quality API (.NET 8)&#34;
+        B --&gt; D{Controller}
+        D --&gt;|Valida e processa| E(Services/Lógica de Negócio)
+        E --&gt;|Calcula Categoria| E
+        E --&gt;|Acessa Dados| F(Contexto do EF Core)
+    end
+
+    subgraph &#34;Camada de Dados&#34;
+        F --&gt; G[(Banco de Dados SQL Server)]
+    end
+
+    subgraph &#34;Documentação e Testes&#34;
+        H[Swagger UI] --&gt;|Interage com| D
+    end
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#ccf,stroke:#333,stroke-width:2px
+    style G fill:#bbf,stroke:#333,stroke-width:2px
+&#39;&#39;&#39;
+</div>
+    <script>
+        
+        if (typeof mermaid !== 'undefined') {
+            mermaid.initialize({
+                startOnLoad: false,  
+                theme: 'default',
+                securityLevel: 'loose'
+            });
+        }
+
+        
+        document.addEventListener("DOMContentLoaded", async function() {
+            if (typeof mermaid === 'undefined') {
+                return;
+            }
+
+            const mermaidElements = document.querySelectorAll('.mermaid');
+            let hasError = false;
+
+            for (let i = 0; i < mermaidElements.length; i++) {
+                const element = mermaidElements[i];
+                const mermaidCode = element.textContent.trim();
+
+                try {
+                    const { svg } = await mermaid.render('mermaid-diagram-' + i, mermaidCode);
+                    element.innerHTML = svg;
+                    console.log('Mermaid diagram ' + (i + 1) + ' rendered successfully');
+                } catch (error) {
+                    hasError = true;
+                    console.error('Mermaid rendering error for diagram ' + (i + 1) + ':', error);
+
+                    
+                    element.innerHTML = '<div class="mermaid-error" style="color: red; border: 2px solid red; padding: 10px; border-radius: 5px; background: #ffeeee;">' +
+                        '<strong>Mermaid Rendering Error (Diagram ' + (i + 1) + '):</strong><br>' +
+                        '<code>' + error.message + '</code>' +
+                        '</div>';
+
+                    
+                    document.body.classList.add('mermaid-render-failed');
+                }
+            }
+
+            
+            window.mermaidRenderComplete = true;
+            window.mermaidHasError = hasError;
+        });
+    </script>
+</body>
+</html>
