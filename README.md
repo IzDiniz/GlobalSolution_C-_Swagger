@@ -7,7 +7,7 @@ Lugas Garcia RM 554070
 <br>
 Pedro Henrique Chaves RM 553988
 
-<br> <br>
+<br>
 ### Vídeo Explicativo: https://youtu.be/EYOK7faC_EM
 
 
